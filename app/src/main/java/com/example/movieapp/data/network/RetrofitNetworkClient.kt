@@ -5,7 +5,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.movieapp.data.NetworkClient
 import com.example.movieapp.data.dto.MovieDetailsRequest
-import com.example.movieapp.data.dto.MoviesSearchRequest
+import com.example.movieapp.data.dto.MovieCastRequest
+import com.example.movieapp.data.dto.MovieSearchRequest
 import com.example.movieapp.data.dto.Response
 
 class RetrofitNetworkClient(
@@ -17,15 +18,16 @@ class RetrofitNetworkClient(
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
-        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest)) {
+        if ((dto !is MovieSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest)) {
             return Response().apply { resultCode = 400 }
         }
 
-        val response = if (dto is MoviesSearchRequest) {
-            imdbService.searchMovies(dto.expression).execute()
-        } else {
-            imdbService.getMovieDetails((dto as MovieDetailsRequest).movieId).execute()
+        val response = when (dto) {
+            is MovieSearchRequest -> imdbService.searchMovies(dto.expression).execute()
+            is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId).execute()
+            else -> imdbService.getFullCast((dto as MovieCastRequest).movieId).execute()
         }
+
         val body = response.body()
         return if (body != null) {
             body.apply { resultCode = response.code() }

@@ -56,6 +56,8 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.viewpager2)
+    implementation(libs.adapterdelegates4.kotlin.dsl)
+    implementation(libs.adapterdelegates4.kotlin.dsl.viewbinding)
     kapt(libs.moxy.compiler)
     annotationProcessor(libs.glide.compiler)
     testImplementation(libs.junit)

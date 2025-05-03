@@ -2,6 +2,7 @@ package com.example.movieapp.di
 
 import android.content.Context
 import com.example.movieapp.data.NetworkClient
+import com.example.movieapp.data.converters.MovieCastConverter
 import com.example.movieapp.data.dto.LocalStorage
 import com.example.movieapp.data.network.IMDbApiService
 import com.example.movieapp.data.network.RetrofitNetworkClient
@@ -14,6 +15,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 val dataModule = module {
 
     single { LocalStorage(get()) }
+
+    single { MovieCastConverter() }
 
     single<IMDbApiService> {
         Retrofit.Builder()

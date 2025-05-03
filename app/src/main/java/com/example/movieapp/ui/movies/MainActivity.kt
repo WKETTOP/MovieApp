@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
                 if (clickDebounce()) {
                     val intent = Intent(this@MainActivity, DetailsActivity::class.java)
                     intent.putExtra("poster", movie.image)
+                    intent.putExtra("id", movie.id)
                     startActivity(intent)
                 }
             }
