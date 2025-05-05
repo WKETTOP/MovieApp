@@ -1,14 +1,14 @@
 package com.example.movieapp.ui.cast
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.movieapp.databinding.ActivityMoviesCastBinding
+import com.example.movieapp.databinding.FragmentMoviesCastBinding
 import com.example.movieapp.ui.cast.models.MovieCastState
 import com.example.movieapp.ui.movieCastHeaderDelegate
 import com.example.movieapp.ui.movieCastPersonDelegate
@@ -16,21 +16,25 @@ import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class MoviesCastActivity : AppCompatActivity() {
+class MoviesCastFragment : Fragment() {
 
     companion object {
 
         private const val ARGS_MOVIE_ID = "movie_id"
 
-        fun newInstance(context: Context, movieId: String): Intent {
-            return Intent(context, MoviesCastActivity::class.java).apply {
-                putExtra(ARGS_MOVIE_ID, movieId)
+        const val TAG = "MoviesCastFragment"
+
+        fun newInstance(movieId: String): Fragment {
+            return MoviesCastFragment().apply {
+                arguments = bundleOf(
+                    ARGS_MOVIE_ID to movieId
+                )
             }
         }
     }
 
     private val moviesCastViewModel: MovieCastViewModel by viewModel {
-        parametersOf(intent.getStringExtra(ARGS_MOVIE_ID))
+        parametersOf(requireArguments().getString(ARGS_MOVIE_ID))
     }
 
     private val adapter = ListDelegationAdapter(
@@ -38,23 +42,25 @@ class MoviesCastActivity : AppCompatActivity() {
         movieCastPersonDelegate()
     )
 
-    private lateinit var binding: ActivityMoviesCastBinding
+    private var _binding: FragmentMoviesCastBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMoviesCastBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivityMoviesCastBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.moviesCastRecyclerView.adapter = adapter
-        binding.moviesCastRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.moviesCastRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        moviesCastViewModel.observeState().observe(this) {
+        moviesCastViewModel.observeState().observe(viewLifecycleOwner) {
             when (it) {
                 is MovieCastState.Loading -> showLoading()
                 is MovieCastState.Error -> showError(it)

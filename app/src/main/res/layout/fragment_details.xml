@@ -2,18 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_poster"
+    android:layout_marginTop="30dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@color/white"
     android:orientation="vertical">
-
-    <Toolbar
-        android:id="@+id/back_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentInsetStartWithNavigation="0dp"
-        android:navigationIcon="@drawable/arrow_back_24"
-        android:title="Назад" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
