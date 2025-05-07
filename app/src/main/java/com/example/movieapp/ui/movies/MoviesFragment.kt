@@ -11,16 +11,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.movieapp.R
-import com.example.movieapp.core.navigation.Router
 import com.example.movieapp.databinding.FragmentMoviesBinding
 import com.example.movieapp.domain.models.Movie
 import com.example.movieapp.presentation.movies.MovieSearchViewModel
 import com.example.movieapp.ui.details.DetailsFragment
 import com.example.movieapp.ui.movies.models.MoviesState
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
@@ -32,7 +30,7 @@ class MoviesFragment : Fragment() {
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
 
-    private val router: Router by inject()
+//    private val router: Router by inject()
 
     private val viewModel by viewModel<MovieSearchViewModel>()
 
@@ -46,12 +44,16 @@ class MoviesFragment : Fragment() {
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClicked(movie: Movie) {
                 if (clickDebounce()) {
-                   router.openFragment(
-                       DetailsFragment.newInstance(
-                           movieId = movie.id,
-                           posterUrl = movie.image
-                       )
-                   )
+//                   router.openFragment(
+//                       DetailsFragment.newInstance(
+//                           movieId = movie.id,
+//                           posterUrl = movie.image
+//                       )
+//                   )
+                    findNavController().navigate(
+                        R.id.action_moviesFragment_to_detailsFragment,
+                        DetailsFragment.createArgs(movie.id, movie.image)
+                    )
                 }
             }
 

@@ -6,15 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import com.example.movieapp.R
-import com.example.movieapp.core.navigation.Router
 import com.example.movieapp.databinding.FragmentAboutBinding
 import com.example.movieapp.domain.models.MovieDetails
 import com.example.movieapp.presentation.details.AboutViewModel
 import com.example.movieapp.ui.cast.MoviesCastFragment
 import com.example.movieapp.ui.details.models.AboutState
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -30,7 +28,7 @@ class AboutFragment : Fragment() {
         }
     }
 
-    private val router: Router by inject()
+//    private val router: Router by inject()
 
     private lateinit var binding: FragmentAboutBinding
 
@@ -58,11 +56,15 @@ class AboutFragment : Fragment() {
         }
 
         binding.showCastButton.setOnClickListener {
-            router.openFragment(
-                MoviesCastFragment.newInstance(
-                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
-                )
+            findNavController().navigate(
+                R.id.action_detailsFragment_to_moviesCastFragment,
+                MoviesCastFragment.createArgs(requireArguments().getString(MOVIE_ID).orEmpty())
             )
+//            router.openFragment(
+//                MoviesCastFragment.newInstance(
+//                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+//                )
+//            )
         }
     }
 
