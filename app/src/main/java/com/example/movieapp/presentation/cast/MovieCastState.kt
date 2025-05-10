@@ -1,4 +1,4 @@
-package com.example.movieapp.ui.cast.models
+package com.example.movieapp.presentation.cast
 
 import com.example.movieapp.core.ui.RVItem
 

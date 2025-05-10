@@ -16,7 +16,7 @@ val dataModule = module {
 
     single { LocalStorage(get()) }
 
-    single { MovieCastConverter() }
+    factory { MovieCastConverter() }
 
     single<IMDbApiService> {
         Retrofit.Builder()

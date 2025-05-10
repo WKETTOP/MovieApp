@@ -1,6 +1,6 @@
 [versions]
 adapterdelegates4KotlinDsl = "4.3.2"
-agp = "8.9.2"
+agp = "8.10.0"
 compiler = "4.14.2"
 converterGson = "2.9.0"
 glide = "4.14.2"
@@ -18,7 +18,7 @@ moxyVersion = "2.2.2"
 retrofit = "2.9.0"
 fragmentKtx = "1.8.6"
 viewpager2 = "1.1.0"
-navigationUiKtx = "2.8.9"
+navigationUiKtx = "2.9.0"
 
 [libraries]
 adapterdelegates4-kotlin-dsl = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl", version.ref = "adapterdelegates4KotlinDsl" }

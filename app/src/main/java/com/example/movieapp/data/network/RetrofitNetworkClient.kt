@@ -7,6 +7,7 @@ import com.example.movieapp.data.NetworkClient
 import com.example.movieapp.data.dto.MovieDetailsRequest
 import com.example.movieapp.data.dto.MovieCastRequest
 import com.example.movieapp.data.dto.MovieSearchRequest
+import com.example.movieapp.data.dto.NamesSearchRequest
 import com.example.movieapp.data.dto.Response
 
 class RetrofitNetworkClient(
@@ -18,11 +19,12 @@ class RetrofitNetworkClient(
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
-        if ((dto !is MovieSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest)) {
+        if ((dto !is MovieSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest) && (dto !is NamesSearchRequest)) {
             return Response().apply { resultCode = 400 }
         }
 
         val response = when (dto) {
+            is NamesSearchRequest -> imdbService.searchNames(dto.expression).execute()
             is MovieSearchRequest -> imdbService.searchMovies(dto.expression).execute()
             is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId).execute()
             else -> imdbService.getFullCast((dto as MovieCastRequest).movieId).execute()
@@ -40,7 +42,8 @@ class RetrofitNetworkClient(
         val connectivityManager = context.getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
-        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
             when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> return true

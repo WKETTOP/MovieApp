@@ -1,6 +1,5 @@
 package com.example.movieapp.presentation.movies
 
-import com.example.movieapp.ui.movies.models.MoviesState
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.OneExecutionStateStrategy

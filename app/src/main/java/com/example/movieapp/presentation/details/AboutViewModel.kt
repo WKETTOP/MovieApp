@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.movieapp.domain.api.MoviesInteractor
 import com.example.movieapp.domain.models.MovieDetails
-import com.example.movieapp.ui.details.models.AboutState
 
 class AboutViewModel(movieId: String, moviesInteractor: MoviesInteractor) :
     ViewModel() {

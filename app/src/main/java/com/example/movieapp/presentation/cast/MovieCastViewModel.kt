@@ -1,12 +1,10 @@
-package com.example.movieapp.ui.cast
+package com.example.movieapp.presentation.cast
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.movieapp.domain.api.MoviesInteractor
 import com.example.movieapp.domain.models.MovieCast
-import com.example.movieapp.presentation.cast.MoviesCastRVItem
-import com.example.movieapp.ui.cast.models.MovieCastState
 
 class MovieCastViewModel(
     movieId: String,

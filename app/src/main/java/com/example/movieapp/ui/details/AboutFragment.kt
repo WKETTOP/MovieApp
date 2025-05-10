@@ -12,7 +12,7 @@ import com.example.movieapp.databinding.FragmentAboutBinding
 import com.example.movieapp.domain.models.MovieDetails
 import com.example.movieapp.presentation.details.AboutViewModel
 import com.example.movieapp.ui.cast.MoviesCastFragment
-import com.example.movieapp.ui.details.models.AboutState
+import com.example.movieapp.presentation.details.AboutState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -30,7 +30,8 @@ class AboutFragment : Fragment() {
 
 //    private val router: Router by inject()
 
-    private lateinit var binding: FragmentAboutBinding
+    private var _binding: FragmentAboutBinding? = null
+    private val binding get() = _binding!!
 
     private val aboutViewModel: AboutViewModel by viewModel {
         parametersOf(requireArguments().getString(MOVIE_ID))
@@ -41,7 +42,7 @@ class AboutFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAboutBinding.inflate(inflater, container, false)
+        _binding = FragmentAboutBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -60,12 +61,12 @@ class AboutFragment : Fragment() {
                 R.id.action_detailsFragment_to_moviesCastFragment,
                 MoviesCastFragment.createArgs(requireArguments().getString(MOVIE_ID).orEmpty())
             )
-//            router.openFragment(
-//                MoviesCastFragment.newInstance(
-//                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
-//                )
-//            )
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun showDetails(movieDetails: MovieDetails) {

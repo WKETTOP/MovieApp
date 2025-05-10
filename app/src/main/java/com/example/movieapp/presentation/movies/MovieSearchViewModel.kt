@@ -12,7 +12,6 @@ import com.example.movieapp.R
 import com.example.movieapp.domain.api.MoviesInteractor
 import com.example.movieapp.domain.models.Movie
 import com.example.movieapp.presentation.SingleLiveEvent
-import com.example.movieapp.ui.movies.models.MoviesState
 
 class MovieSearchViewModel(
     application: Application,

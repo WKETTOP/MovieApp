@@ -18,7 +18,7 @@ import com.example.movieapp.databinding.FragmentMoviesBinding
 import com.example.movieapp.domain.models.Movie
 import com.example.movieapp.presentation.movies.MovieSearchViewModel
 import com.example.movieapp.ui.details.DetailsFragment
-import com.example.movieapp.ui.movies.models.MoviesState
+import com.example.movieapp.presentation.movies.MoviesState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
