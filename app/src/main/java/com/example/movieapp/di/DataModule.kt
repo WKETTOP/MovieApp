@@ -1,8 +1,11 @@
 package com.example.movieapp.di
 
 import android.content.Context
+import androidx.room.Room
 import com.example.movieapp.data.NetworkClient
 import com.example.movieapp.data.converters.MovieCastConverter
+import com.example.movieapp.data.converters.MovieDbConvertor
+import com.example.movieapp.data.db.AppDatabase
 import com.example.movieapp.data.dto.LocalStorage
 import com.example.movieapp.data.network.IMDbApiService
 import com.example.movieapp.data.network.RetrofitNetworkClient
@@ -17,6 +20,13 @@ val dataModule = module {
     single { LocalStorage(get()) }
 
     factory { MovieCastConverter() }
+
+    factory { MovieDbConvertor() }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
+    }
 
     single<IMDbApiService> {
         Retrofit.Builder()
@@ -36,5 +46,4 @@ val dataModule = module {
     single<NetworkClient> {
         RetrofitNetworkClient(get(), androidContext())
     }
-
 }

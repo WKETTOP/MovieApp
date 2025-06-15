@@ -44,6 +44,10 @@ class RootActivity : AppCompatActivity() {
 //        }
     }
 
+    fun animateBottomNavigationView() {
+        binding.bottomNavigationView.isVisible = false
+    }
+
 //    override fun onResume() {
 //        super.onResume()
 //        navigatorHolder.attachNavigator(navigator)

@@ -45,4 +45,8 @@
         android:name="com.example.movieapp.ui.names.InfoFragment"
         android:label="fragment_info"
         tools:layout="@layout/fragment_info" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.movieapp.ui.history.HistoryFragment"
+        android:label="HistoryFragment" />
 </navigation>

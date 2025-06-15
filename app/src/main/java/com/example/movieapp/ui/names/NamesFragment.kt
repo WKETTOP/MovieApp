@@ -27,8 +27,6 @@ class NamesFragment : Fragment() {
 
     private val adapter = PersonsAdapter()
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.movieapp.R
@@ -19,6 +20,10 @@ import com.example.movieapp.domain.models.Movie
 import com.example.movieapp.presentation.movies.MovieSearchViewModel
 import com.example.movieapp.ui.details.DetailsFragment
 import com.example.movieapp.presentation.movies.MoviesState
+import com.example.movieapp.ui.root.RootActivity
+import com.example.movieapp.util.debounce
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
@@ -26,6 +31,8 @@ class MoviesFragment : Fragment() {
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
+
+    private lateinit var onMovieClickDebounce: (Movie) -> Unit
 
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
@@ -38,32 +45,9 @@ class MoviesFragment : Fragment() {
 
     private var textWatcher: TextWatcher? = null
 
-    private val handler = Handler(Looper.getMainLooper())
+//    private val handler = Handler(Looper.getMainLooper())
 
-    private val adapter = MoviesAdapter(
-        object : MoviesAdapter.MovieClickListener {
-            override fun onMovieClicked(movie: Movie) {
-                if (clickDebounce()) {
-//                   router.openFragment(
-//                       DetailsFragment.newInstance(
-//                           movieId = movie.id,
-//                           posterUrl = movie.image
-//                       )
-//                   )
-                    findNavController().navigate(
-                        R.id.action_moviesFragment_to_detailsFragment,
-                        DetailsFragment.createArgs(movie.id, movie.image)
-                    )
-                }
-            }
-
-            override fun onFavoriteToggle(movie: Movie) {
-                viewModel.toggleFavorite(movie)
-            }
-        }
-    )
-
-
+    private var adapter: MoviesAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +60,36 @@ class MoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        onMovieClickDebounce = debounce<Movie>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) {movie ->
+            findNavController().navigate(R.id.action_moviesFragment_to_detailsFragment,
+                DetailsFragment.createArgs(movie.id, movie.image))
+        }
+
+        adapter = MoviesAdapter(
+            object : MoviesAdapter.MovieClickListener {
+                override fun onMovieClicked(movie: Movie) {
+//                if (clickDebounce()) {
+////                   router.openFragment(
+////                       DetailsFragment.newInstance(
+////                           movieId = movie.id,
+////                           posterUrl = movie.image
+////                       )
+////                   )
+//                    findNavController().navigate(
+//                        R.id.action_moviesFragment_to_detailsFragment,
+//                        DetailsFragment.createArgs(movie.id, movie.image)
+//                    )
+//                }
+                    (activity as RootActivity).animateBottomNavigationView()
+                    onMovieClickDebounce(movie)
+                }
+
+                override fun onFavoriteToggle(movie: Movie) {
+                    viewModel.toggleFavorite(movie)
+                }
+            }
+        )
 
         binding.searchResult.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -112,17 +126,22 @@ class MoviesFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter = null
         _binding = null
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
+//    private fun clickDebounce(): Boolean {
+//        val current = isClickAllowed
+//        if (isClickAllowed) {
+//            isClickAllowed = false
+//            viewLifecycleOwner.lifecycleScope.launch {
+//                delay(CLICK_DEBOUNCE_DELAY)
+//                isClickAllowed = true
+//            }
+////            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+//        }
+//        return current
+//    }
 
     private fun showLoading() {
         binding.progressBar.isVisible = true
@@ -147,9 +166,9 @@ class MoviesFragment : Fragment() {
         binding.placeholderMessage.isVisible = false
         binding.searchResult.isVisible = true
 
-        adapter.movies.clear()
-        adapter.movies.addAll(movies)
-        adapter.notifyDataSetChanged()
+        adapter?.movies?.clear()
+        adapter?.movies?.addAll(movies)
+        adapter?.notifyDataSetChanged()
     }
 
     private fun render(state: MoviesState) {

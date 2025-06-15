@@ -3,8 +3,10 @@ package com.example.movieapp.presentation.cast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.movieapp.domain.api.MoviesInteractor
 import com.example.movieapp.domain.models.MovieCast
+import kotlinx.coroutines.launch
 
 class MovieCastViewModel(
     movieId: String,
@@ -17,16 +19,32 @@ class MovieCastViewModel(
     init {
         stateLiveData.postValue(MovieCastState.Loading)
 
-        moviesInteractor.getMovieCast(movieId, object : MoviesInteractor.MovieCastConsumer {
-            override fun consume(movieCast: MovieCast?, errorMessage: String?) {
-                if (movieCast != null) {
-                    stateLiveData.postValue(castToUiStateContent(movieCast))
-                } else {
-                    stateLiveData.postValue(MovieCastState.Error(errorMessage ?: "Unknown error"))
+        viewModelScope.launch {
+            moviesInteractor
+                .getMovieCast(movieId)
+                .collect { pair ->
+                    if (pair.first != null) {
+                        stateLiveData.postValue(castToUiStateContent(pair.first!!))
+                    } else {
+                        stateLiveData.postValue(
+                            MovieCastState.Error(
+                                pair.second ?: "Unknown error"
+                            )
+                        )
+                    }
                 }
-            }
+        }
 
-        })
+//        moviesInteractor.getMovieCast(movieId, object : MoviesInteractor.MovieCastConsumer {
+//            override fun consume(movieCast: MovieCast?, errorMessage: String?) {
+//                if (movieCast != null) {
+//                    stateLiveData.postValue(castToUiStateContent(movieCast))
+//                } else {
+//                    stateLiveData.postValue(MovieCastState.Error(errorMessage ?: "Unknown error"))
+//                }
+//            }
+//
+//        })
     }
 
     private fun castToUiStateContent(cast: MovieCast): MovieCastState {
